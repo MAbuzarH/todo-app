@@ -1,91 +1,86 @@
-import Image from 'next/image'
-import { Inter } from '@next/font/google'
+
+// import Image from 'next/image'
+// import { Inter } from '@next/font/google'
+"use client"
 import styles from './page.module.css'
 
-const inter = Inter({ subsets: ['latin'] })
+import { useState } from 'react';
 
-export default function Home() {
-  return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.jsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+const TodoList = () => {
+    // state to store the list of todos
+    let currentTime = new Date().toLocaleTimeString();
+     
+
+    const [todos,setTodos] = useState([{id:1, text: "Task 1", completed:false ,currentTime:"5:00 PM "},
+    {id:2, text: "Task 2", completed:false, currentTime:"5 : 30 PM "}]);
+
+    // function to handle adding new todos to the list
+    const handleAddTodo = (text) => {
+        if(text !== ""){
+            const newTodo = {
+                id: todos.length + 1,
+                text,
+                currentTime,
+                completed: false
+            };
+            setTodos([...todos, newTodo]);
+        }
+        else{
+            alert("pleas Enter your Task");
+        }
+       
+    }
+
+    // function to handle completing a todo
+    const handleCompleteTodo = (id) => {
+        const updatedTodos = todos.map(todo => {
+            if (todo.id === id) {
+                todo.completed = !todo.completed;
+            }
+            return todo;
+        });
+        setTodos(updatedTodos);
+    }
+
+    // function to handle deleting a todo
+    const handleDeleteTodo = (id) => {
+        const updatedTodos = todos.filter(todo => todo.id !== id);
+        setTodos(updatedTodos);
+    }
+
+    return (
+        <div className={styles.main}>
+            <h1>Todo List</h1>
+            <ul className={styles.listI}>
+                {todos.map(todo => (
+                    <li key={todo.id}>
+                        <span className={styles.textspan}
+                            onClick={() => handleCompleteTodo(todo.id)}
+                            style={{ textDecoration: todo.completed ? 'line-through' : 'none' }}
+                        >
+                            {todo.text}
+                        </span>
+                        <span className={styles.timespan}>
+                            {todo.currentTime}
+                        </span>
+                        <button onClick={() => handleDeleteTodo(todo.id)}>Delete</button>
+                    </li>
+                ))}
+            </ul>
+            <form className={styles.inputI} onSubmit={(e) => {
+                e.preventDefault();
+                const text = e.target.elements.text.value;
+                handleAddTodo(text);
+                e.target.elements.text.value = '';
+
+            }}>
+                <input type="text" name="text" placeholder="Add new todo" />
+                <button type="submit">Add Todo</button>
+            </form>
         </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-        <div className={styles.thirteen}>
-          <Image src="/thirteen.svg" alt="13" width={40} height={31} priority />
-        </div>
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://beta.nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={inter.className}>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p className={inter.className}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={inter.className}>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p className={inter.className}>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={inter.className}>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p className={inter.className}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+    )
 }
+
+export default TodoList;
+
+
